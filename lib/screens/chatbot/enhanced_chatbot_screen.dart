@@ -20,7 +20,7 @@ class _EnhancedChatbotScreenState extends State<EnhancedChatbotScreen>
   late Animation<double> _typingAnimation;
 
   // AI API Configuration
-  static const String _apiKey = 'AIzaSyDMuzHvJk-BKYhcEZt03zeVaI-l_G8OJV0';
+  static const String _apiKey = 'AIzaSyB5p6WJ7Q8R9X2T3Y4V5U6W7X8Y9Z0A1B2C3';
   static const String _apiUrl =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 

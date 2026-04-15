@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/splash/splash_screen.dart' as splash;
-import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/dashboard/production_dashboard_screen.dart';
 import 'screens/chatbot/chatbot_screen.dart';
 import 'screens/admin/data_viewer_screen.dart';
 import 'screens/admin/full_database_viewer.dart';
@@ -33,7 +33,7 @@ class DevBalanceApp extends StatelessWidget {
       ),
       home: const splash.SplashScreen(),
       routes: {
-        '/dashboard': (context) => const DashboardScreen(),
+        '/dashboard': (context) => const ProductionDashboardScreen(),
         '/chatbot': (context) => const ChatbotScreen(),
         '/data-viewer': (context) => const DataViewerScreen(),
         '/full-database': (context) => const FullDatabaseViewer(),

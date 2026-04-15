@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../registration/new_registration_screen.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../dashboard/production_dashboard_screen.dart';
 import '../../services/local_storage_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -45,7 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
+        MaterialPageRoute(
+          builder: (context) => const ProductionDashboardScreen(),
+        ),
       );
     } catch (e) {
       if (!mounted) return;

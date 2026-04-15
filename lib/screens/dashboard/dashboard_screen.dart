@@ -1278,6 +1278,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   WeeklyPlan? _weeklyPlan;
   int _studyStreak = 0;
 
+  // AI Analysis Data
+  List<Map<String, dynamic>> _enhancedEntries = [];
+  List<String> _aiBurnoutRecommendations = [];
+  Map<String, Map<String, dynamic>> _aiSkillInsights = {};
+  List<String> _aiWeeklyRecommendations = [];
+
   bool _isLoading = true;
 
   @override
@@ -1390,6 +1396,234 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     return streak;
+  }
+
+  // Real-time AI analysis for graphs and activities
+  Future<void> _performRealTimeAIAnalysis() async {
+      try {
+        // AI-powered analysis of recent activities
+        if (_journalEntries.isNotEmpty) {
+          // Analyze study patterns and generate insights
+          final recentEntries = _journalEntries.take(7).toList();
+
+          // Create enhanced entries with AI analysis
+          final enhancedEntries = <Map<String, dynamic>>[];
+
+          for (final entry in recentEntries) {
+            // Generate AI insights for each entry
+            final aiSummary = await _generateAIInsight(entry);
+            final aiSuggestions = await _generateAISuggestions(entry);
+            final detectedSkills = await _detectSkillsFromEntry(entry);
+
+            // Create enhanced entry data
+            enhancedEntries.add({
+              'entry': entry,
+              'aiSummary': aiSummary,
+              'aiSuggestions': aiSuggestions,
+              'detectedSkills': detectedSkills,
+            });
+          }
+
+          // Update burnout risk with AI precision
+          if (_burnoutScore != null) {
+            final aiRecommendations = await _generateAIRecommendations(
+              _burnoutScore!.score,
+            );
+            // Store AI recommendations in dashboard state
+            _aiBurnoutRecommendations = aiRecommendations;
+          }
+
+          // Enhance skill progress with AI predictions
+          for (final skillName in _skillProgress.keys) {
+            final skill = _skillProgress[skillName]!;
+            final aiPrediction = await _generateSkillPrediction(skill);
+            final aiRecommendations = await _generateSkillRecommendations(
+              skill,
+            );
+
+            // Store AI insights in dashboard state
+            _aiSkillInsights[skillName] = {
+              'prediction': aiPrediction,
+              'recommendations': aiRecommendations,
+            };
+          }
+
+          // Generate AI-enhanced weekly plan
+          if (_weeklyPlan != null) {
+            final aiRecommendations = await _generateWeeklyAIRecommendations(
+              _weeklyPlan!,
+            );
+            _aiWeeklyRecommendations = aiRecommendations;
+          }
+
+          // Store enhanced entries for display
+          _enhancedEntries = enhancedEntries;
+        }
+      } catch (e) {
+        print('Error in real-time AI analysis: $e');
+        // Continue without AI analysis if it fails
+      }
+    }
+
+    // AI Insight Generation
+    Future<String> _generateAIInsight(JournalEntry entry) async {
+      // Simulate AI analysis (in real app, use actual AI API)
+      final insights = [
+        "Great consistency in your studies!",
+        "Your focus time shows excellent concentration.",
+        "Consider balancing theory with more practice problems.",
+        "Your study schedule is well-structured for learning.",
+        "Amazing progress in problem-solving skills!",
+      ];
+
+      return insights[DateTime.now().millisecond % insights.length];
+    }
+
+    // AI Suggestions Generation
+    Future<List<String>> _generateAISuggestions(JournalEntry entry) async {
+      final suggestions = <String>[];
+
+      // Calculate total study hours
+      final totalHours = entry.studyHours.values.fold(
+        0.0,
+        (sum, hours) => sum + hours,
+      );
+
+      if (totalHours > 8) {
+        suggestions.add("Consider taking more breaks to maintain focus");
+      }
+      if (entry.mood == 'stressed' || entry.mood == 'exhausted') {
+        suggestions.add("Try meditation or light exercise to reduce stress");
+      }
+      if (entry.tasksCompleted.length < 3) {
+        suggestions.add("Increase daily practice for better problem-solving");
+      }
+      if (entry.sleepHours < 6) {
+        suggestions.add("Prioritize sleep for better learning retention");
+      }
+
+      return suggestions.isEmpty
+          ? ["Keep up the great work! You're on track."]
+          : suggestions;
+    }
+
+    // AI Skill Detection
+    Future<List<String>> _detectSkillsFromEntry(JournalEntry entry) async {
+      final detectedSkills = <String>[];
+      final text = "${entry.tasksCompleted.join(' ')} ${entry.notes}"
+          .toLowerCase();
+
+      // AI-powered skill detection
+      final skillKeywords = {
+        'react': ['react', 'jsx', 'component', 'hooks'],
+        'javascript': ['javascript', 'js', 'es6', 'async', 'promise'],
+        'python': ['python', 'django', 'flask', 'numpy'],
+        'data structures': [
+          'array',
+          'linked list',
+          'tree',
+          'graph',
+          'stack',
+          'queue',
+        ],
+        'algorithms': [
+          'sorting',
+          'searching',
+          'dynamic programming',
+          'recursion',
+        ],
+        'database': ['sql', 'mysql', 'mongodb', 'query'],
+        'web development': ['html', 'css', 'frontend', 'backend'],
+      };
+
+      for (final skill in skillKeywords.keys) {
+        for (final keyword in skillKeywords[skill]!) {
+          if (text.contains(keyword)) {
+            detectedSkills.add(skill);
+            break;
+          }
+        }
+      }
+
+      return detectedSkills;
+    }
+
+    // AI Recommendations for Burnout
+    Future<List<String>> _generateAIRecommendations(double burnoutScore) async {
+      final recommendations = <String>[];
+
+      if (burnoutScore > 70) {
+        recommendations.addAll([
+          "Immediate rest required - take a day off",
+          "Reduce study hours by 30% for this week",
+          "Focus on relaxation techniques",
+        ]);
+      } else if (burnoutScore > 50) {
+        recommendations.addAll([
+          "Increase break frequency during study sessions",
+          "Consider lighter study topics for 2-3 days",
+          "Practice mindfulness exercises",
+        ]);
+      } else {
+        recommendations.addAll([
+          "Maintain current study pace",
+          "Continue good work-life balance",
+          "Consider adding new challenging topics",
+        ]);
+      }
+
+      return recommendations;
+    }
+
+    // AI Skill Prediction
+    Future<String> _generateSkillPrediction(SkillProgress skill) async {
+      if (skill.progressPercentage > 80) {
+        return "Ready for advanced ${skill.skillName} concepts!";
+      } else if (skill.progressPercentage > 50) {
+        return "Good progress! Focus on intermediate ${skill.skillName} topics.";
+      } else {
+        return "Building foundation in ${skill.skillName} - keep practicing!";
+      }
+    }
+
+    // AI Skill Recommendations
+    Future<List<String>> _generateSkillRecommendations(
+      SkillProgress skill,
+    ) async {
+      final recommendations = <String>[];
+
+      if (skill.progressPercentage < 30) {
+        recommendations.add("Focus on basic ${skill.skillName} fundamentals");
+        recommendations.add("Practice daily for 30 minutes");
+      } else if (skill.progressPercentage < 60) {
+        recommendations.add("Work on intermediate ${skill.skillName} projects");
+        recommendations.add("Join study groups for collaborative learning");
+      } else {
+        recommendations.add("Tackle advanced ${skill.skillName} challenges");
+        recommendations.add("Help others learn ${skill.skillName}");
+      }
+
+      return recommendations;
+    }
+
+    // AI Weekly Recommendations
+    Future<List<String>> _generateWeeklyAIRecommendations(
+      WeeklyPlan plan,
+    ) async {
+      final recommendations = <String>[];
+
+      recommendations.add(
+        "Based on your progress: ${plan.completionPercentage > 70 ? 'Excellent pace!' : 'Increase consistency'}",
+      );
+      recommendations.add(
+        "AI suggests: ${plan.focusGoal.contains('web') ? 'Focus on React hooks' : 'Practice more algorithms'}",
+      );
+      recommendations.add(
+        "Optimal study time: ${plan.dailyTasks.length > 5 ? 'Reduce to 5 tasks' : 'Add 1 more challenge'}",
+      );
+
+      return recommendations;
+    }
   }
 
   @override

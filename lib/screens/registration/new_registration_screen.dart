@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../dashboard/main_dashboard_screen.dart';
+import '../dashboard/production_dashboard_screen.dart';
 import '../../services/local_storage_service.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -595,7 +595,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MainDashboardScreen()),
+        MaterialPageRoute(
+          builder: (context) => const ProductionDashboardScreen(),
+        ),
       );
     } catch (e) {
       if (!mounted) return;

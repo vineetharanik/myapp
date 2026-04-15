@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../login/login_screen.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../dashboard/production_dashboard_screen.dart';
 import '../../services/local_storage_service.dart';
 
 class TitleScreen extends StatefulWidget {
@@ -23,7 +23,9 @@ class _TitleScreenState extends State<TitleScreen> {
     if (isLoggedIn && mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
+        MaterialPageRoute(
+          builder: (context) => const ProductionDashboardScreen(),
+        ),
       );
     }
   }
