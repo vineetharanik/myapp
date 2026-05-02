@@ -1,0 +1,39 @@
+@startuml User Interaction Flow
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - User Interaction Flow
+
+actor User as user
+participant "Login Screen" as login
+participant "Dashboard" as dashboard
+participant "Journal Entry" as journal
+participant "AI Analysis" as analysis
+participant "Chatbot" as chatbot
+participant "Analytics" as analytics
+
+user -> login : Enter credentials
+login -> dashboard : Navigate to main screen
+
+user -> dashboard : View daily summary
+dashboard -> journal : Start journal entry
+
+user -> journal : Input study hours,\nDSA problems, mood
+journal -> analysis : Submit for AI processing
+analysis -> journal : Return burnout risk,\nskill alignment, recommendations
+journal -> dashboard : Update dashboard with results
+
+user -> dashboard : Need help
+dashboard -> chatbot : Open chatbot interface
+user -> chatbot : Ask questions
+chatbot -> user : Personalized responses
+
+user -> dashboard : View progress
+dashboard -> analytics : Open analytics screen
+analytics -> user : Show graphs and trends
+
+note right of analysis : Google Gemini AI\nProcessing
+note left of journal : All fields optional\nUser choice
+@enduml

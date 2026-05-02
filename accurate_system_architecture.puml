@@ -1,0 +1,65 @@
+@startuml DevBalance AI - Real System Architecture
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam rectangle {
+  BorderColor #000000
+  BackgroundColor #FFFFFF
+}
+
+title DevBalance AI - Actual System Architecture
+
+package "Frontend (Flutter)" {
+  rectangle "Mobile App" as frontend {
+    [Dashboard Screen] as dashboard
+    [Journal Entry] as journal
+    [Chatbot Interface] as chatbot_ui
+    [Analytics View] as analytics_ui
+    [Settings Screen] as settings
+  }
+}
+
+package "Backend (FastAPI)" {
+  rectangle "API Server" as backend {
+    [AI Processing Service] as ai_service
+    [User Management] as user_service
+    [Data Analytics] as analytics_service
+    [Recommendation Engine] as rec_service
+  }
+}
+
+package "External APIs" {
+  [Google Gemini 1.5 Flash] as gemini
+  [Firebase Auth] as firebase
+}
+
+package "Local Storage" {
+  database "SharedPreferences" as local_db
+  [Encrypted Cache] as cache
+}
+
+package "Cloud Services" {
+  database "Firebase Firestore" as cloud_db
+}
+
+' Connections
+dashboard --> journal
+dashboard --> chatbot_ui
+dashboard --> analytics_ui
+
+journal --> ai_service
+chatbot_ui --> ai_service
+analytics_ui --> analytics_service
+
+ai_service --> gemini
+user_service --> firebase
+
+ai_service --> local_db
+analytics_service --> cache
+user_service --> cloud_db
+
+frontend --> local_db
+frontend --> cache
+
+@enduml

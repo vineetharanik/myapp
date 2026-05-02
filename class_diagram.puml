@@ -1,0 +1,145 @@
+@startuml Complete Class Diagram
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - Complete Class Structure
+
+package "Data Models" {
+  class "JournalAnalysis" {
+    +summary: String
+    +mood: String
+    +stressLevel: int
+    +burnoutRisk: int
+    +keyIssues: List<String>
+    +suggestions: List<String>
+    +motivationMessage: String
+    +skillsMentioned: List<String>
+    +skillsProgress: Map
+    +studyTimeAnalysis: Map
+    +weeklyRecommendations: Map
+    +fromJson(json): JournalAnalysis
+    +toJson(): Map
+  }
+}
+
+package "Services" {
+  class "LocalStorageService" {
+    +initialize()
+    +signInWithEmail(email, password)
+    +signUpWithEmail(email, password)
+    +saveJournalEntry(userId, data)
+    +getJournalHistory(userId)
+    +updateSkillProgress(userId, skill, progress)
+    +updateStudyHours(userId, date, hours)
+    +saveWeeklyPlan(userId, plan)
+    +sendChatbotMessage(userId, message)
+    +getChatbotMessages(userId)
+    -_currentUser: Map
+    -_prefs: SharedPreferences
+  }
+  
+  class "ApiService" {
+    +analyzeJournalEntry(text): Future<JournalAnalysis>
+    +generateWeeklyPlan(userData): Future<Map>
+    +getRecommendations(userProfile): Future<List<String>>
+    -_baseUrl: String
+    -_httpClient: HttpClient
+  }
+}
+
+package "UI Screens" {
+  class "MainDashboardScreen" {
+    +_loadDashboardData()
+    +_submitJournal()
+    +_navigateToAnalytics()
+    -_userProfile: Map
+    -_journalHistory: List
+    -_todayAnalysis: JournalAnalysis
+    -_localStorageService: LocalStorageService
+  }
+  
+  class "LoginScreen" {
+    +_login()
+    +_validateForm()
+    -_emailController: TextEditingController
+    -_passwordController: TextEditingController
+    -_formKey: GlobalKey
+  }
+  
+  class "StudyAnalyticsScreen" {
+    +_generateCharts()
+    +_calculateStats()
+    +_loadWeeklyData()
+    -_studyHours: List<double>
+    -_skillsProgress: Map
+    -_journalHistory: List
+  }
+  
+  class "ChatbotScreen" {
+    +_sendMessage()
+    +_loadChatHistory()
+    -_messages: List<Map>
+    -_controller: TextEditingController
+    -_localStorageService: LocalStorageService
+  }
+  
+  class "DailyJournalScreen" {
+    +_submitJournal()
+    +_validateInput()
+    -_studyHoursController: TextEditingController
+    -_dsaController: TextEditingController
+    -_goalsController: TextEditingController
+    -_notesController: TextEditingController
+    -_mood: String
+  }
+}
+
+package "Utility Classes" {
+  class "BurnoutCalculator" {
+    +calculateRisk(analysis): int
+    +analyzeTrend(history): double
+    +getRiskLevel(score): String
+    -_weights: Map<String, double>
+  }
+  
+  class "SkillProgressTracker" {
+    +updateProgress(skill, value)
+    +getProgressReport(): Map
+    +calculateAlignment(userGoals): double
+    -_skills: Map<String, double>
+  }
+  
+  class "WeeklyPlanGenerator" {
+    +generatePlan(userProfile, journalHistory): Map
+    +adaptPlan(currentPlan, performance): Map
+    -_studyTemplates: Map
+  }
+}
+
+' Relationships
+MainDashboardScreen --> LocalStorageService : uses
+MainDashboardScreen --> JournalAnalysis : displays
+LoginScreen --> LocalStorageService : authenticates
+StudyAnalyticsScreen --> LocalStorageService : queries
+ChatbotScreen --> LocalStorageService : loads/saves
+DailyJournalScreen --> LocalStorageService : saves
+
+LocalStorageService --> JournalAnalysis : creates
+LocalStorageService --> ApiService : calls
+ApiService --> JournalAnalysis : returns
+
+MainDashboardScreen --> DailyJournalScreen : navigates to
+MainDashboardScreen --> StudyAnalyticsScreen : navigates to
+MainDashboardScreen --> ChatbotScreen : navigates to
+
+BurnoutCalculator --> JournalAnalysis : analyzes
+SkillProgressTracker --> JournalAnalysis : updates
+WeeklyPlanGenerator --> JournalAnalysis : uses
+
+note right of JournalAnalysis : Core data model\nfor AI analysis results
+note left of LocalStorageService : Singleton service\nmanaging all local data
+note bottom of MainDashboardScreen : Central hub\nof the application
+note top of ApiService : Handles all\nbackend API calls
+@enduml

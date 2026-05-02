@@ -1,0 +1,41 @@
+@startuml Data Flow Diagram
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - Data Flow Diagram
+
+actor "Student User" as user
+
+rectangle "Frontend App" {
+  [Journal Input] as input
+  [Local Storage] as storage
+  [Display Results] as display
+}
+
+rectangle "Backend System" {
+  [Data Processing] as process
+  [AI Analysis] as ai
+  [Risk Calculator] as risk
+}
+
+cloud "Google AI" as gemini
+
+database "Local Database" as db
+
+user -> input : Study hours, mood, goals
+input -> storage : Store locally
+storage -> process : Send for analysis
+process -> ai : Send text data
+ai -> gemini : Request AI processing
+gemini -> ai : Return insights
+ai -> risk : Calculate burnout score
+risk -> storage : Store results
+storage -> display : Show to user
+storage -> db : Persist data
+
+note right of gemini : External API Call
+note left of storage : SharedPreferences
+note bottom of risk : Formula: α·Study + β·Stress + γ·Sleep + δ·Sentiment
+@enduml

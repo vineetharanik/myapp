@@ -127,9 +127,9 @@ class AnalyticsService {
   // Calculate skill progress from journal entries - only for user's registered skills
   static Map<String, SkillProgress> calculateSkillProgress(
     List<JournalEntry> entries,
-    List<String> userSkills,
-    {List<Map<String, dynamic>> history = const []}
-  ) {
+    List<String> userSkills, {
+    List<Map<String, dynamic>> history = const [],
+  }) {
     final trackedSkills = <String>{};
     trackedSkills.addAll(
       userSkills
@@ -150,7 +150,9 @@ class AnalyticsService {
     }
 
     for (final journal in history) {
-      final analysis = Map<String, dynamic>.from(journal['analysis'] as Map? ?? {});
+      final analysis = Map<String, dynamic>.from(
+        journal['analysis'] as Map? ?? {},
+      );
       trackedSkills.addAll(
         List<String>.from(analysis['skills_mentioned'] as List? ?? [])
             .map(_canonicalSkillName)
@@ -188,7 +190,9 @@ class AnalyticsService {
     }
 
     for (final journal in history) {
-      final analysis = Map<String, dynamic>.from(journal['analysis'] as Map? ?? {});
+      final analysis = Map<String, dynamic>.from(
+        journal['analysis'] as Map? ?? {},
+      );
       final progressMap = Map<String, dynamic>.from(
         analysis['skills_progress'] as Map? ?? {},
       );
@@ -237,12 +241,12 @@ class AnalyticsService {
       final aiProgress = aiSamples.isEmpty
           ? 0.0
           : aiSamples.reduce((a, b) => a + b) / aiSamples.length;
-      final heuristicProgress =
-          ((heuristicHits[skill] ?? 0) * 12.5).clamp(0, 100).toDouble();
-      final newProgress = (aiProgress > 0
-              ? aiProgress.clamp(0.0, 100.0)
-              : heuristicProgress)
+      final heuristicProgress = ((heuristicHits[skill] ?? 0) * 12.5)
+          .clamp(0, 100)
           .toDouble();
+      final newProgress =
+          (aiProgress > 0 ? aiProgress.clamp(0.0, 100.0) : heuristicProgress)
+              .toDouble();
 
       final completedMilestones = <String>[];
       final pendingMilestones = List<String>.from(

@@ -15,6 +15,7 @@ class LocalStorageService {
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
+    await _initializeDefaults();
   }
 
   Future<void> saveJournalEntry(
@@ -141,16 +142,36 @@ class LocalStorageService {
   ) async {
     await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
 
+    // Trim both email and password to handle whitespace issues
+    email = email.trim();
+    password = password.trim();
+
     final users = _prefs?.getStringList('users') ?? [];
+    print('Attempting login for email: "$email"');
+    print('Total users in system: ${users.length}');
+
     for (String userJson in users) {
       final user = jsonDecode(userJson);
+      print('Checking user: ${user['email']}');
+
       if (user['email'] == email && user['password'] == password) {
         _currentUser = user;
+        print('Login successful for user: ${user['email']}');
         return user;
       }
     }
 
-    throw Exception('No user found for this email or wrong password.');
+    // Check if email exists but password is wrong
+    for (String userJson in users) {
+      final user = jsonDecode(userJson);
+      if (user['email'] == email) {
+        print('Email found but password mismatch');
+        throw Exception('Incorrect password. Please try again.');
+      }
+    }
+
+    print('Email not found in system');
+    throw Exception('No account found with this email. Please sign up first.');
   }
 
   Future<void> signOut() async {

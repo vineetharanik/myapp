@@ -1,0 +1,79 @@
+@startuml DevBalance AI System Architecture
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam rectangle {
+  BorderColor #000000
+  BackgroundColor #FFFFFF
+}
+
+title DevBalance AI - System Architecture
+
+package "Frontend Layer" {
+  rectangle "Flutter App" as flutter {
+    [Dashboard Screen] as dashboard
+    [Journal Entry] as journal
+    [Chatbot Interface] as chatbot_ui
+    [Analytics View] as analytics_ui
+  }
+}
+
+package "Backend Services" {
+  rectangle "FastAPI Server" as backend {
+    [AI Processing Service] as ai_service
+    [User Management] as user_service
+    [Data Analytics] as analytics_service
+    [Recommendation Engine] as rec_service
+  }
+}
+
+package "AI/ML Layer" {
+  rectangle "Deep Learning Models" as ml {
+    [CNN-Text Classifier] as cnn
+    [BERT Transformer] as bert
+    [Burnout Predictor] as predictor
+    [Sentiment Analyzer] as sentiment
+  }
+}
+
+package "External Services" {
+  [Google Gemini AI] as gemini
+  [OAuth Provider] as oauth
+}
+
+package "Data Storage" {
+  database "Local SQLite" as local_db
+  database "Encrypted Cache" as cache
+}
+
+package "Monitoring" {
+  [Performance Monitor] as monitor
+  [Error Logger] as logger
+}
+
+' Connections
+dashboard --> journal
+dashboard --> chatbot_ui
+dashboard --> analytics_ui
+
+journal --> ai_service
+chatbot_ui --> ai_service
+analytics_ui --> analytics_service
+
+ai_service --> cnn
+ai_service --> bert
+rec_service --> predictor
+analytics_service --> sentiment
+
+cnn --> gemini
+bert --> gemini
+
+user_service --> oauth
+ai_service --> local_db
+analytics_service --> cache
+
+backend --> monitor
+backend --> logger
+
+@enduml

@@ -11,7 +11,9 @@ class DailyJournalScreen extends StatefulWidget {
 class _DailyJournalScreenState extends State<DailyJournalScreen> {
   final TextEditingController _studyHoursController = TextEditingController();
   final TextEditingController _whatStudiedController = TextEditingController();
-  final TextEditingController _dsaProblemsController = TextEditingController(text: '0');
+  final TextEditingController _dsaProblemsController = TextEditingController(
+    text: '0',
+  );
   final TextEditingController _dsaPlatformController = TextEditingController();
   final TextEditingController _goalPracticeController = TextEditingController();
   final TextEditingController _generalNotesController = TextEditingController();
@@ -28,9 +30,12 @@ class _DailyJournalScreenState extends State<DailyJournalScreen> {
   }
 
   Future<void> _submitJournal() async {
-    if (_studyHoursController.text.isEmpty || _whatStudiedController.text.isEmpty) {
+    if (_studyHoursController.text.isEmpty ||
+        _whatStudiedController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in study hours and what you studied')),
+        const SnackBar(
+          content: Text('Please fill in study hours and what you studied'),
+        ),
       );
       return;
     }
@@ -39,7 +44,7 @@ class _DailyJournalScreenState extends State<DailyJournalScreen> {
 
     try {
       await _localStorageService.initialize();
-      
+
       if (_localStorageService.currentUser == null) {
         throw Exception('User not logged in');
       }
@@ -74,10 +79,9 @@ class _DailyJournalScreenState extends State<DailyJournalScreen> {
 
       // Clear form
       _clearForm();
-      
+
       // Go back to dashboard
       Navigator.pop(context);
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
@@ -140,7 +144,8 @@ class _DailyJournalScreenState extends State<DailyJournalScreen> {
                 controller: _whatStudiedController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: 'What did you study? (e.g., React hooks, DSA arrays)',
+                  hintText:
+                      'What did you study? (e.g., React hooks, DSA arrays)',
                   hintStyle: const TextStyle(color: Colors.white54),
                   filled: true,
                   fillColor: Colors.white.withOpacity(0.1),
@@ -194,7 +199,8 @@ class _DailyJournalScreenState extends State<DailyJournalScreen> {
                 controller: _goalPracticeController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: 'What did you practice for your goal? (e.g., Built a React component)',
+                  hintText:
+                      'What did you practice for your goal? (e.g., Built a React component)',
                   hintStyle: const TextStyle(color: Colors.white54),
                   filled: true,
                   fillColor: Colors.white.withOpacity(0.1),
@@ -250,28 +256,39 @@ class _DailyJournalScreenState extends State<DailyJournalScreen> {
             _buildSectionCard('😊 How are you feeling?', [
               Wrap(
                 spacing: 8,
-                children: [
-                  'great', 'good', 'neutral', 'tired', 'stressed', 'anxious'
-                ].map((mood) {
-                  final isSelected = _selectedMood == mood;
-                  return GestureDetector(
-                    onTap: () => setState(() => _selectedMood = mood),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: isSelected ? const Color(0xFF00D9FF) : Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        mood.toUpperCase(),
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.white70,
-                          fontSize: 12,
+                children:
+                    [
+                      'great',
+                      'good',
+                      'neutral',
+                      'tired',
+                      'stressed',
+                      'anxious',
+                    ].map((mood) {
+                      final isSelected = _selectedMood == mood;
+                      return GestureDetector(
+                        onTap: () => setState(() => _selectedMood = mood),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFF00D9FF)
+                                : Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            mood.toUpperCase(),
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : Colors.white70,
+                              fontSize: 12,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
             ]),
 

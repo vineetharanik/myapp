@@ -1,0 +1,67 @@
+@startuml DevBalance AI Workflow
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - Complete Workflow Diagram
+
+actor "Student User" as user
+
+participant "Authentication" as auth
+participant "Dashboard" as dashboard
+participant "Journal Entry" as journal
+participant "AI Processing" as ai
+participant "Deep Learning Models" as ml
+participant "Recommendation Engine" as rec
+participant "Chatbot" as chatbot
+participant "Analytics" as analytics
+participant "Storage" as storage
+
+user -> auth : Login/Signup
+auth -> storage : Validate credentials
+storage --> auth : Return user data
+auth --> user : Authentication success
+
+user -> dashboard : Access main interface
+dashboard -> storage : Load user profile
+storage --> dashboard : Return profile data
+
+user -> dashboard : Start journal entry
+dashboard -> journal : Open entry form
+
+user -> journal : Input study data
+note right of journal : Study hours, DSA problems,\nMood, Free text
+
+journal -> storage : Save entry
+storage --> journal : Confirm save
+
+journal -> ai : Request analysis
+ai -> ml : Process text features
+note right of ml : CNN + BERT processing\nSentiment analysis\nPattern recognition
+
+ml --> ai : Return analysis results
+ai -> storage : Store AI insights
+
+ai -> rec : Generate recommendations
+rec --> ai : Return personalized tips
+
+ai --> journal : Return complete analysis
+journal --> dashboard : Update with results
+dashboard --> user : Display insights and recommendations
+
+user -> dashboard : Need assistance
+dashboard -> chatbot : Open chat interface
+user -> chatbot : Send message
+chatbot -> storage : Load conversation history
+chatbot -> ai : Get contextual response
+ai --> chatbot : Return personalized reply
+chatbot --> user : Display response
+chatbot -> storage : Save conversation
+
+user -> dashboard : View progress
+dashboard -> analytics : Open analytics view
+analytics -> storage : Load historical data
+analytics --> user : Display charts and trends
+
+@enduml

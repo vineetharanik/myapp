@@ -1,0 +1,33 @@
+@startuml Simple Data Flow
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - Data Flow Diagram
+
+actor "User" as user
+
+rectangle "Frontend" as frontend {
+  [Journal Input] as input
+  [Display Results] as display
+}
+
+rectangle "Backend" as backend {
+  [AI Processing] as ai
+  [Risk Calculator] as risk
+}
+
+cloud "Google AI" as gemini
+
+database "Local Storage" as db
+
+user -> input : Enter journal data
+input -> ai : Send for analysis
+ai -> gemini : Request AI insights
+gemini -> ai : Return analysis
+ai -> risk : Calculate burnout
+risk -> db : Store results
+db -> display : Show to user
+
+@enduml

@@ -1,0 +1,44 @@
+@startuml Simple Class Diagram
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - Core Classes
+
+class "LocalStorageService" {
+  +signInWithEmail()
+  +saveJournalEntry()
+  +getJournalHistory()
+  +updateSkillProgress()
+}
+
+class "JournalAnalysis" {
+  +mood: String
+  +stressLevel: int
+  +burnoutRisk: int
+  +skillsProgress: Map
+  +toJson()
+}
+
+class "DashboardScreen" {
+  +_loadDashboardData()
+  +_submitJournal()
+}
+
+class "ChatbotScreen" {
+  +_sendMessage()
+  +_loadChatHistory()
+}
+
+class "AnalyticsScreen" {
+  +_generateCharts()
+  +_calculateStats()
+}
+
+DashboardScreen --> LocalStorageService : uses
+ChatbotScreen --> LocalStorageService : loads
+AnalyticsScreen --> LocalStorageService : queries
+LocalStorageService --> JournalAnalysis : creates
+
+@enduml

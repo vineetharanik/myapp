@@ -1,0 +1,63 @@
+@startuml DevBalance AI System Architecture
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam rectangle {
+  BorderColor #000000
+  BackgroundColor #FFFFFF
+}
+
+title DevBalance AI - System Architecture
+
+package "Frontend (Flutter)" {
+  [Dashboard Screen] as dashboard
+  [Journal System] as journal
+  [Chatbot Interface] as chatbot
+  [Analytics Screen] as analytics
+}
+
+package "Backend (FastAPI)" {
+  [Journal Analysis API] as analysis_api
+  [Burnout Detection] as burnout
+  [Recommendation Engine] as recommendations
+  [Chatbot Service] as chatbot_service
+}
+
+package "AI Services" {
+  [Google Gemini AI] as gemini
+}
+
+package "Data Storage" {
+  [Local Storage] as local
+  [User Profiles] as profiles
+  [Journal History] as history
+}
+
+database "SharedPreferences" as db
+
+dashboard --> journal
+dashboard --> chatbot
+dashboard --> analytics
+
+journal --> analysis_api
+chatbot --> chatbot_service
+analytics --> analysis_api
+
+analysis_api --> burnout
+analysis_api --> recommendations
+analysis_api --> gemini
+chatbot_service --> gemini
+
+burnout --> local
+recommendations --> local
+analysis_api --> local
+
+local --> profiles
+local --> history
+profiles --> db
+history --> db
+
+note right of gemini : AI/ML Processing
+note left of local : Privacy-Focused\nLocal Storage
+@enduml

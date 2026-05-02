@@ -1,0 +1,50 @@
+@startuml Simple System Architecture
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam rectangle {
+  BorderColor #000000
+  BackgroundColor #FFFFFF
+}
+
+title DevBalance AI - System Architecture
+
+rectangle "Frontend (Flutter)" as frontend {
+  [Dashboard] as dashboard
+  [Journal Entry] as journal
+  [Chatbot] as chatbot
+  [Analytics] as analytics
+}
+
+rectangle "Backend (FastAPI)" as backend {
+  [AI Analysis] as ai
+  [Burnout Detection] as burnout
+  [Recommendations] as rec
+}
+
+rectangle "Storage" as storage {
+  [Local Database] as db
+}
+
+rectangle "External AI" as external {
+  [Google Gemini] as gemini
+}
+
+dashboard --> journal
+dashboard --> chatbot
+dashboard --> analytics
+
+journal --> ai
+chatbot --> ai
+analytics --> ai
+
+ai --> burnout
+ai --> rec
+ai --> gemini
+
+ai --> db
+burnout --> db
+rec --> db
+
+@enduml

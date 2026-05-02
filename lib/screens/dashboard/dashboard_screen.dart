@@ -1902,16 +1902,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: _burnoutScore!.riskColor.withOpacity(0.2),
+                    color: (_burnoutScore?.riskColor ?? Colors.grey).withOpacity(0.2),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: _burnoutScore!.riskColor.withOpacity(0.5),
+                      color: (_burnoutScore?.riskColor ?? Colors.grey).withOpacity(0.5),
                     ),
                   ),
                   child: Text(
-                    _burnoutScore!.riskLevel.toUpperCase(),
+                    _burnoutScore?.riskLevel.toUpperCase() ?? 'UNKNOWN',
                     style: TextStyle(
-                      color: _burnoutScore!.riskColor,
+                      color: _burnoutScore?.riskColor ?? Colors.grey,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1920,7 +1920,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const Spacer(),
                 Icon(
                   Icons.touch_app,
-                  color: _burnoutScore!.riskColor,
+                  color: _burnoutScore?.riskColor ?? Colors.grey,
                   size: 16,
                 ),
                 const SizedBox(width: 4),
@@ -1935,10 +1935,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 16),
             LinearProgressIndicator(
-              value: _burnoutScore!.score / 100.0,
+              value: (_burnoutScore?.score ?? 0) / 100.0,
               backgroundColor: Colors.white.withOpacity(0.2),
               valueColor: AlwaysStoppedAnimation<Color>(
-                _burnoutScore!.riskColor,
+                _burnoutScore?.riskColor ?? Colors.grey,
               ),
             ),
             const SizedBox(height: 16),
@@ -3331,13 +3331,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _buildReliefExercise(
               '🫁 Deep Breathing',
               '4-7-8 Technique: Breathe in 4s, hold 7s, exhale 8s',
-              () => _startBreathingExercise(),
+              () => _startBreathingExercise(context),
             ),
             const SizedBox(height: 12),
             _buildReliefExercise(
               '💪 Progressive Muscle Relaxation',
               'Tense and release each muscle group for 5 seconds',
-              () => _startMuscleRelaxation(),
+              () => _startMuscleRelaxation(context),
             ),
             const SizedBox(height: 12),
             _buildReliefExercise(
@@ -3476,7 +3476,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _startBreathingExercise() {
+  void _startBreathingExercise(BuildContext context) {
     Navigator.pop(context);
     showDialog(
       context: context,
@@ -3504,7 +3504,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _startMuscleRelaxation() {
+  void _startMuscleRelaxation(BuildContext context) {
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

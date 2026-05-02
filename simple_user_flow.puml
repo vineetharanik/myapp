@@ -1,0 +1,33 @@
+@startuml Simple User Flow
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - User Interaction Flow
+
+actor "Student" as user
+
+participant "Login" as login
+participant "Dashboard" as dashboard
+participant "Journal" as journal
+participant "AI Analysis" as ai
+participant "Chatbot" as chatbot
+
+user -> login : Enter credentials
+login -> dashboard : Navigate
+
+user -> dashboard : View summary
+dashboard -> journal : Start entry
+
+user -> journal : Fill journal
+journal -> ai : Submit for analysis
+ai -> journal : Return insights
+journal -> dashboard : Update display
+
+user -> dashboard : Need help
+dashboard -> chatbot : Open chat
+user -> chatbot : Ask questions
+chatbot -> user : Provide help
+
+@enduml

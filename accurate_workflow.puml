@@ -1,0 +1,54 @@
+@startuml DevBalance AI - Real Workflow
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+title DevBalance AI - Actual System Workflow
+
+actor "Student User" as user
+
+participant "Flutter App" as app
+participant "FastAPI Backend" as backend
+participant "Google Gemini API" as gemini
+participant "Firebase Auth" as auth
+participant "Local Storage" as storage
+
+user -> app : Launch app
+app -> storage : Load user data
+app -> auth : Authenticate user
+auth --> app : Return auth token
+
+user -> app : Access dashboard
+app -> storage : Load journal history
+
+user -> app : Start journal entry
+app -> user : Show entry form
+
+user -> app : Input journal data
+note right of app : Study hours, mood,\nDSA problems, free text
+
+app -> storage : Save entry locally
+
+app -> backend : Send for AI analysis
+backend -> gemini : API call with prompt
+note right of gemini : Google Gemini 1.5 Flash\nprocesses text
+
+gemini --> backend : Return AI insights
+backend --> app : Return processed results
+
+app -> storage : Save AI analysis
+app -> user : Display insights + recommendations
+
+user -> app : Open chatbot
+app -> backend : Request chatbot response
+backend -> gemini : Get contextual reply
+gemini --> backend : Return response
+backend --> app : Return chat reply
+app -> user : Display chat message
+
+user -> app : View analytics
+app -> storage : Load historical data
+app -> user : Show charts and trends
+
+@enduml
