@@ -44,17 +44,29 @@ A comprehensive Flutter application designed to help students maintain mental we
 ## Technology Stack
 
 ### Frontend (Flutter)
-- **Framework**: Flutter 3.x
+- **Framework**: Flutter 3.x (SDK ^3.11.4)
 - **Language**: Dart
-- **State Management**: StatefulWidget + Provider pattern
+- **State Management**: StatefulWidget pattern
 - **UI Components**: Material Design 3
 - **Charts**: Custom Flutter painters and charts
 
 ### Backend Services
-- **Database**: Firebase Firestore
-- **Authentication**: Firebase Auth
-- **Storage**: Firebase Storage
-- **AI/ML**: Custom analytics service with pattern recognition
+- **Database**: Firebase Firestore (cloud_firestore: ^5.0.0)
+- **Authentication**: Firebase Auth (firebase_auth: ^5.0.0)
+- **Storage**: Firebase Storage (firebase_storage: ^12.0.0)
+- **Real-time Database**: Firebase Database (firebase_database: ^11.0.0)
+- **Core Services**: Firebase Core (firebase_core: ^3.0.0)
+
+### Key Dependencies
+- **HTTP Client**: http: ^1.6.0
+- **Local Storage**: shared_preferences: ^2.2.2
+- **File Handling**: file_picker: ^10.3.10
+- **Icons**: cupertino_icons: ^1.0.8
+
+### AI/ML Services
+- **Custom Analytics**: Pattern recognition and insights
+- **Academic AI**: Personalized recommendations
+- **Data Analysis**: Study pattern optimization
 
 ### Platform Support
 - **Web** (Chrome, Edge, Safari)
@@ -117,19 +129,58 @@ lib/
 │   ├── journal_entry.dart
 │   ├── burnout_score.dart
 │   ├── skill_progress.dart
-│   └── weekly_plan.dart
+│   ├── weekly_plan.dart
+│   └── journal_analysis.dart
 ├── screens/                   # UI screens and pages
 │   ├── dashboard/            # Main dashboard screens
+│   │   ├── dashboard_screen.dart
+│   │   ├── correct_dashboard_screen.dart
+│   │   ├── enhanced_dashboard_screen.dart
+│   │   └── production_dashboard_screen.dart
 │   ├── journal/              # Journal and mood tracking
+│   │   ├── journal_screen.dart
+│   │   ├── daily_journal_screen.dart
+│   │   ├── enhanced_journal_screen.dart
+│   │   ├── journal_result_screen.dart
+│   │   └── production_journal_screen.dart
 │   ├── skills/               # Skill development
+│   │   ├── skill_roadmap_screen.dart
+│   │   └── enhanced_skill_roadmap_screen.dart
 │   ├── burnout/              # Burnout prevention
+│   │   └── burnout_details_screen.dart
 │   ├── chatbot/              # AI assistant
-│   └── notebook/             # Study tools
+│   │   ├── chatbot_screen.dart
+│   │   └── enhanced_chatbot_screen.dart
+│   ├── notebook/             # Study tools
+│   │   ├── notebook_screen.dart
+│   │   └── notebook_screen_local.dart
+│   ├── admin/               # Admin tools
+│   │   ├── data_viewer_screen.dart
+│   │   └── full_database_viewer.dart
+│   ├── analytics/           # Analytics and insights
+│   │   └── study_analytics_screen.dart
+│   ├── login/               # Authentication
+│   │   └── login_screen.dart
+│   ├── registration/        # User registration
+│   │   ├── registration_screen.dart
+│   │   └── new_registration_screen.dart
+│   ├── settings/            # App settings
+│   │   └── settings_screen.dart
+│   ├── splash/              # App initialization
+│   │   └── splash_screen.dart
+│   └── title/               # App title screen
+│       └── title_screen.dart
 ├── services/                  # Business logic and APIs
 │   ├── local_storage_service.dart
 │   ├── analytics_service.dart
-│   └── api_service.dart
-└── main.dart                 # Application entry point
+│   ├── api_service.dart
+│   ├── auth_service.dart
+│   ├── firebase_service.dart
+│   ├── firebase_integration_service.dart
+│   └── academic_ai_service.dart
+├── firebase_config.dart         # Firebase configuration
+├── firebase_options.dart        # Firebase options
+└── main.dart                   # Application entry point
 ```
 
 ## Key Components
@@ -189,6 +240,11 @@ The application includes comprehensive analytics for:
 - [Firebase Setup](FIREBASE_DEPLOYMENT_GUIDE.md) - Firebase configuration
 - [Troubleshooting](DATABASE_TROUBLESHOOTING.md) - Common issues and solutions
 - [Setup Guide](SETUP.md) - Detailed setup instructions
+- [Step by Step Guide](STEP_BY_STEP_GUIDE.md) - Comprehensive setup walkthrough
+- [Features Complete](FEATURES_COMPLETE.md) - Complete feature documentation
+- [Image Placement Guide](figure_placement_guide.md) - Image and media placement
+- [Corrected Image Placements](CORRECTED_IMAGE_PLACEMENTS.md) - Updated image references
+- [README Complete](README_COMPLETE.md) - Alternative comprehensive documentation
 
 ## License
 
