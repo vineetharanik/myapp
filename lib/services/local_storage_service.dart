@@ -234,6 +234,22 @@ class LocalStorageService {
     }
   }
 
+  Future<void> saveUserProfile(Map<String, dynamic> userProfile) async {
+    final users = _prefs?.getStringList('users') ?? [];
+    final updatedUsers = <String>[];
+
+    for (String userJson in users) {
+      final user = jsonDecode(userJson);
+      if (user['id'] == userProfile['id']) {
+        updatedUsers.add(jsonEncode(userProfile));
+      } else {
+        updatedUsers.add(userJson);
+      }
+    }
+
+    await _prefs?.setStringList('users', updatedUsers);
+  }
+
   Future<Map<String, dynamic>?> getUserProfile(String userId) async {
     if (_currentUser != null && _currentUser!['id'] == userId) {
       return _currentUser!;

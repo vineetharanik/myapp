@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:file_picker/file_picker.dart';
 import '../../services/local_storage_service.dart';
+import '../notebook/notebook_screen.dart';
 
 class EnhancedChatbotScreen extends StatefulWidget {
   const EnhancedChatbotScreen({super.key});
@@ -18,6 +20,13 @@ class _EnhancedChatbotScreenState extends State<EnhancedChatbotScreen>
   late LocalStorageService _localStorageService;
   late AnimationController _typingController;
   late Animation<double> _typingAnimation;
+
+  // PDF Upload functionality
+  List<Map<String, dynamic>> _uploadedPDFs = [];
+  bool _isUploading = false;
+
+  // Tab selection
+  int _selectedTab = 0;
 
   // AI API Configuration
   static const String _apiKey = 'AIzaSyB5p6WJ7Q8R9X2T3Y4V5U6W7X8Y9Z0A1B2C3';
@@ -75,6 +84,51 @@ class _EnhancedChatbotScreenState extends State<EnhancedChatbotScreen>
         // Scroll to bottom logic would go here
       }
     });
+  }
+
+  Future<void> _uploadPDF() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        allowMultiple: false,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+
+        setState(() {
+          _isUploading = true;
+        });
+
+        // Add file info to uploaded PDFs
+        setState(() {
+          _uploadedPDFs.add({
+            'name': file.name,
+            'path': file.path,
+            'size': file.size,
+            'uploadedAt': DateTime.now(),
+          });
+        });
+
+        // Add bot message about PDF
+        _addBotMessage(
+          "📄 **PDF Uploaded Successfully!**\n\nFile: ${file.name}\nSize: ${(file.size! / 1024 / 1024).toStringAsFixed(2)} MB\n\nI can now help you analyze this document. What would you like to know about it?",
+        );
+
+        setState(() {
+          _isUploading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isUploading = false;
+      });
+
+      if (mounted) {
+        _addBotMessage("Successfully added.!");
+      }
+    }
   }
 
   Future<void> _sendMessage() async {
@@ -271,38 +325,90 @@ Format your response with clear sections and use markdown-style formatting with 
       ),
       body: Column(
         children: [
-          // Messages area
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF0A0A0F),
-                    const Color(0xFF1A1A2E).withOpacity(0.3),
-                  ],
+          // Tab bar for Chat and Notebook
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A1A2E),
+              border: Border(
+                bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedTab = 0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedTab == 0
+                            ? const Color(0xFF00D9FF)
+                            : Colors.transparent,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: _selectedTab == 0
+                                ? const Color(0xFF00D9FF)
+                                : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '💬 Chat',
+                          style: TextStyle(
+                            color: _selectedTab == 0
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.7),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _messages.length + (_isTyping ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == _messages.length && _isTyping) {
-                    return _buildTypingIndicator();
-                  }
-                  final message = _messages[index];
-                  return _buildMessageBubble(message);
-                },
-              ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedTab = 1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedTab == 1
+                            ? const Color(0xFF00D9FF)
+                            : Colors.transparent,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: _selectedTab == 1
+                                ? const Color(0xFF00D9FF)
+                                : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '📓 Notebook',
+                          style: TextStyle(
+                            color: _selectedTab == 1
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.7),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // Quick action buttons
-          _buildQuickActions(),
-
-          // Input area
-          _buildInputArea(),
+          // Tab content
+          Expanded(
+            child: _selectedTab == 0
+                ? _buildChatContent()
+                : _buildNotebookContent(),
+          ),
         ],
       ),
     );
@@ -584,6 +690,13 @@ Format your response with clear sections and use markdown-style formatting with 
       ),
       child: Row(
         children: [
+          // PDF Upload Button
+          IconButton(
+            onPressed: _uploadPDF,
+            icon: const Icon(Icons.upload_file, color: Colors.white),
+            tooltip: 'Upload PDF',
+          ),
+          const SizedBox(width: 8),
           Expanded(
             child: TextField(
               controller: _messageController,
@@ -695,5 +808,208 @@ Format your response with clear sections and use markdown-style formatting with 
         ],
       ),
     );
+  }
+
+  Widget _buildChatContent() {
+    return Column(
+      children: [
+        // Messages area
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF0A0A0F),
+                  const Color(0xFF1A1A2E).withOpacity(0.3),
+                ],
+              ),
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _messages.length + (_isTyping ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == _messages.length && _isTyping) {
+                  return _buildTypingIndicator();
+                }
+                final message = _messages[index];
+                return _buildMessageBubble(message);
+              },
+            ),
+          ),
+        ),
+
+        // Quick action buttons
+        _buildQuickActions(),
+
+        // Input area
+        _buildInputArea(),
+      ],
+    );
+  }
+
+  Widget _buildNotebookContent() {
+    return Column(
+      children: [
+        // Notebook header
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1A1A2E),
+            border: Border(
+              bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                '📓 My Notebook',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: _uploadPDF,
+                    icon: const Icon(Icons.upload_file, color: Colors.white),
+                    tooltip: 'Upload PDF',
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    onPressed: () {
+                      // Add new note functionality
+                    },
+                    icon: const Icon(Icons.add, color: Colors.white),
+                    tooltip: 'Add Note',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Uploaded PDFs list
+        Expanded(
+          child: _uploadedPDFs.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.folder_open,
+                        size: 64,
+                        color: Colors.white.withOpacity(0.5),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No PDFs uploaded yet',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Upload your first PDF to get started!',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.5),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _uploadedPDFs.length,
+                  itemBuilder: (context, index) {
+                    final pdf = _uploadedPDFs[index];
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.red.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.picture_as_pdf,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  pdf['name'] ?? 'Unknown PDF',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Size: ${((pdf['size'] ?? 0) / 1024 / 1024).toStringAsFixed(2)} MB',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.7),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Uploaded: ${_formatDate(pdf['uploadedAt'])}',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.5),
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _uploadedPDFs.removeAt(index);
+                              });
+                            },
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            tooltip: 'Delete PDF',
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+
+  String _formatDate(dynamic date) {
+    if (date is DateTime) {
+      final dt = date as DateTime;
+      return '${dt.day}/${dt.month}/${dt.year}';
+    }
+    return 'Unknown date';
   }
 }

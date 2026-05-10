@@ -97,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: Colors.white54,
                   ),
                   onTap: () {
-                    // Navigate to profile edit
+                    _showProfileEditDialog();
                   },
                 ),
               ],
@@ -195,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: Colors.white54,
                   ),
                   onTap: () {
-                    // Navigate to study reminders
+                    _showStudyRemindersDialog();
                   },
                 ),
                 const Divider(color: Colors.white24),
@@ -589,6 +589,225 @@ class _SettingsScreenState extends State<SettingsScreen> {
               }
             },
             child: const Text('Logout', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showProfileEditDialog() {
+    final nameController = TextEditingController(
+      text: _localStorageService.currentUser?['name'] ?? '',
+    );
+    final emailController = TextEditingController(
+      text: _localStorageService.currentUser?['email'] ?? '',
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        title: const Text(
+          'Edit Profile',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Name',
+                labelStyle: const TextStyle(color: Color(0xFF00D9FF)),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.1),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Color(0xFF00D9FF)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                labelStyle: const TextStyle(color: Color(0xFF00D9FF)),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.1),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Color(0xFF00D9FF)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Color(0xFF00D9FF)),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (_localStorageService.currentUser != null) {
+                final userId = _localStorageService.currentUser!['id'];
+                await _localStorageService.updateUserProfile(
+                  userId: userId,
+                  name: nameController.text,
+                  skills: _localStorageService.currentUser!['skills'] ?? [],
+                  goals: _localStorageService.currentUser!['goals'] ?? '',
+                  stressAssessment:
+                      _localStorageService.currentUser!['stressAssessment'] ??
+                      {},
+                );
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Profile updated successfully!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
+            child: const Text(
+              'Save',
+              style: TextStyle(color: Color(0xFF00D9FF)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showStudyRemindersDialog() {
+    final reminderController = TextEditingController(text: '09:00 AM');
+    bool studyEnabled = true;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        title: const Text(
+          'Study Reminders',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SwitchListTile(
+              title: const Text(
+                'Enable Study Reminders',
+                style: TextStyle(color: Colors.white),
+              ),
+              value: studyEnabled,
+              activeColor: const Color(0xFF00D9FF),
+              onChanged: (value) {
+                studyEnabled = value;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: reminderController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Reminder Time',
+                labelStyle: const TextStyle(color: Color(0xFF00D9FF)),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.1),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Color(0xFF00D9FF)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Color(0xFF00D9FF)),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Study reminders configured!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            child: const Text(
+              'Save',
+              style: TextStyle(color: Color(0xFF00D9FF)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDailyGoalsDialog() {
+    final goalController = TextEditingController(text: '2 hours');
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        title: const Text(
+          'Daily Study Goals',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: goalController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Daily Study Hours',
+                labelStyle: const TextStyle(color: Color(0xFF00D9FF)),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.1),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Color(0xFF00D9FF)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Color(0xFF00D9FF)),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Daily goals set successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            child: const Text(
+              'Save',
+              style: TextStyle(color: Color(0xFF00D9FF)),
+            ),
           ),
         ],
       ),

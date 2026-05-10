@@ -10,6 +10,8 @@ import '../journal/production_journal_screen.dart';
 import '../skills/enhanced_skill_roadmap_screen.dart';
 import '../burnout/burnout_details_screen.dart';
 import '../chatbot/enhanced_chatbot_screen.dart';
+import '../chatbot/chatbot_screen.dart';
+import '../settings/settings_screen.dart';
 
 class ProductionDashboardScreen extends StatefulWidget {
   const ProductionDashboardScreen({super.key});
@@ -108,13 +110,32 @@ class _ProductionDashboardScreenState extends State<ProductionDashboardScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          // Basic Chatbot Button
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ChatbotScreen()),
+            ),
+            icon: const Icon(Icons.chat, color: Colors.blue),
+            tooltip: 'Basic Chat Assistant',
+          ),
+          // Enhanced Chatbot Button
           IconButton(
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const EnhancedChatbotScreen()),
             ),
-            icon: const Icon(Icons.chat, color: Colors.white),
-            tooltip: 'AI Chat Assistant',
+            icon: const Icon(Icons.smart_toy, color: Colors.purple),
+            tooltip: 'AI Chat Assistant (Enhanced)',
+          ),
+          // Settings Button
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
+            icon: const Icon(Icons.settings, color: Colors.white),
+            tooltip: 'Settings',
           ),
         ],
       ),
@@ -124,22 +145,22 @@ class _ProductionDashboardScreenState extends State<ProductionDashboardScreen> {
               onRefresh: _loadDashboardData,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTodayJournalButton(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     _buildStudyTimeChart(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     _buildBurnoutRiskCard(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     _buildSkillAlignmentCard(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     _buildDailyTrackingCard(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     _buildWeeklyPlannerCard(),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
